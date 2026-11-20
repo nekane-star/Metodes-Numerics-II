@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-'Aqui es resoldra el problema fent servir el metode de Euler explicit'
+"""Aqui es resoldra el problema fent servir el metode de Euler explicit"""
+
+'Preparació'
 
 #Definim algunes de les constants necessaries per aplicar el metode
 N=101  #Nombre de punts del maiat espaial
@@ -20,11 +22,13 @@ kappa=0.56
 C=2*kappa/(sigma*dV**2)
 
 #Definim els punts del maiat espaial(per poder fer els grafics despres)
-x=[]
+x=[] #Aquesta serà la llista de x no normalitzades (la que farem servir en general)
+xn=[] #Aquesta serà la llista de x normalitzades que farem servir per la grafica de l'error
 for u in range(N):
     xin=x0+u*dx #Aquesta esta normalitzada
     xi=xin*2 #Aquesta esta sense normalitzar
     x.append(xi)
+    xn.append(xin)
 
 #Condicions de contorn
 Tc_no=36.5 #En ºC (aquesta és la no normalitzada)
@@ -39,8 +43,26 @@ Dt=[dt1,dt2,dt3]
 #Per poder fer més d'una grafica (ens interesen la grafica que compara els tres metodes i la que compara cada metode amb l'analitica, ja que un metode esta molt allunyat i no es pot apreciar),farem una llista on guardem les ultimes fileres de cada matriu
 T_imp=[]
 
-#Farem una llista de colors pel grafic per poder-lo personalitzar
+#Pels errors tambe farem una llista
+Errors=[]
+
+
+#Farem una llista de colors i linestyle pel grafic per poder-lo personalitzar
 colors=['mediumspringgreen','violet','deepskyblue']
+
+
+'Solució analitica'
+#Aquesta part la necessitarem per calcular l'error i per comparar els resultats
+#Farem servir la mateixa funció que vam defirnir al codi de Solució Analitica
+def T(k,q,xn,t_final):
+    return k+2*q/(np.pi**3)*sum(((1-(-1)**n)/n**3)*np.sin(n*np.pi*xn)*(1-np.exp(-n**2 *np.pi**2 * t_final)) for n in range(1,100) )
+
+Xn=np.linspace(0,1,N)
+Q=1
+T_norm=T(Tc,Q,Xn,tmax) #Normalitzada pel calcul de l'error
+T_real=(4720/7)*T_norm -273.15 #Sense normalitzar i en ºC per les comparacions
+
+'Metode Euler explicit'
 
 for dt,color in zip(Dt,colors):#el zip ens permet que hi hagi dues dependencies a la vegada al bucle, i aixi podrem personalitzar els colors del grafic
     g=dt/dx**2 #Calculem la gamma
@@ -69,6 +91,10 @@ for dt,color in zip(Dt,colors):#el zip ens permet que hi hagi dues dependencies 
     #D'aqui nomes ens interesarà l'ultima filera, que correspon a T(x,ta), aixi que definirem
     T_final_n=m[-1][:]
 
+    #Calculem l'error de les funcions i fem el grafic de l'error
+    Err=np.abs(T_norm - T_final_n)
+    Errors.append(Err)
+
     #Desfem la normalitzacio
     T_final=[]
     for t in T_final_n:
@@ -78,23 +104,32 @@ for dt,color in zip(Dt,colors):#el zip ens permet que hi hagi dues dependencies 
 
     T_imp.append(T_final) #Afegim la filera a la llista per despres poder fer diferents grafics si fos necessari
 
-    #Fem els grafics
-    plt.plot(x,T_final,color=color,alpha=1,label=f'gamma={g:.2f}')
+    #Fem els grafics  (la idea principal era fer un unic grafic amb totes tres però no s'aprecia be, de manera que es faran 3 grafics)
+    plt.plot(x,T_final,color=color,linestyle='-' ,alpha=1,label=f'Euler amb gamma={g:.2f}')
+    plt.plot(x,T_real,color='green',linestyle='-',label='Solució analitica')
+    plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
+    plt.axhline(50, color='indianred',label='50ºC')
+    plt.axvspan(0.75,1.25, color='lavender',label='Zona malalta')
+    plt.xlabel('Posició en cm')
+    plt.ylabel('Temperatura en ºC')
+    plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black')
+    plt.show()
 
+
+#Grafiquem els errors
+for er,dt,color in zip(Errors,Dt,colors):
+   g=dt/dx**2 #Aixo ho farem per poder posar els labels
+   plt.plot(xn,er,color=color,label=f'gamma={g:.2f}')
+plt.xlabel('Posició normalitzada')
+plt.ylabel('Error normalitzat')
 plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
 plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black')
-plt.xlabel('Posició en cm')
-plt.ylabel('Temperatura en ºC')
 plt.show()
-
-plt.plot(x,T_imp[-1],color='slateblue',alpha=0.5,label='gamma 0.25')
-plt.plot(x,T_imp[2],color='blueviolet',alpha=0.5,label='gamma 0.45')
-plt.axhline(50, color='indianred')
-plt.axvspan(0.75,1.25, color='lavender',label='Zona malalta')
+#Tambe farem una grafica sense l'error de dt1 per poder comparar millor els altres
+plt.plot(xn,Errors[-1],color=colors[-1] ,label='gamma 0.25')
+plt.plot(xn,Errors[1],color=colors[1], label='gamma 0.45')
+plt.xlabel('Posició normalitzada')
+plt.ylabel('Error normalitzat')
 plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
-plt.xlabel('Posició en cm')
-plt.ylabel('Temperatura en ºC')
 plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black')
-plt.show()
-
-    
+plt.show()    
