@@ -10,9 +10,6 @@ N=101  #Nombre de punts del maiat espaial
 x0=0
 dx=1/(N-1) #Delta de x (separació entre els punts del maiat espaial)
 t0=0
-dt1=0.51*dx**2 #Delta de t donats a l'enunciat
-dt2=0.49*dx**2
-dt3=0.25*dx**2
 tmax=0.025
 
 #Definirem la constant de normalització (per normalitzar multiplicarem i per desfer la normalització dividirem)
@@ -46,10 +43,8 @@ T_imp=[]
 #Pels errors tambe farem una llista
 Errors=[]
 
-
-#Farem una llista de colors i linestyle pel grafic per poder-lo personalitzar
-colors=['mediumspringgreen','violet','deepskyblue']
-
+#Llista de ordres per les grafiques (aixi ordenem si estan per sobre o per sota de la solució analitica perque es vegin millor)
+ordre=[1,3,3]
 
 'Solució analitica'
 #Aquesta part la necessitarem per calcular l'error i per comparar els resultats
@@ -62,9 +57,9 @@ Q=1
 T_norm=T(Tc,Q,Xn,tmax) #Normalitzada pel calcul de l'error
 T_real=(4720/7)*T_norm -273.15 #Sense normalitzar i en ºC per les comparacions
 
-'Metode Euler explicit'
 
-for dt,color in zip(Dt,colors):#el zip ens permet que hi hagi dues dependencies a la vegada al bucle, i aixi podrem personalitzar els colors del grafic
+'Metode Euler explicit'
+for (dt,z) in zip(Dt,ordre):
     g=dt/dx**2 #Calculem la gamma
     Nt=int(tmax/dt)+1 #Calculem el nombre de files que haura de tenir la matriu per asegurar-nos que arribem al temps desitjat
     
@@ -105,29 +100,31 @@ for dt,color in zip(Dt,colors):#el zip ens permet que hi hagi dues dependencies 
     T_imp.append(T_final) #Afegim la filera a la llista per despres poder fer diferents grafics si fos necessari
 
     #Fem els grafics  (la idea principal era fer un unic grafic amb totes tres però no s'aprecia be, de manera que es faran 3 grafics)
-    plt.plot(x,T_final,color=color,linestyle='-' ,alpha=1,label=f'Euler amb gamma={g:.2f}')
-    plt.plot(x,T_real,color='green',linestyle='-',label='Solució analitica')
+    plt.plot(x,T_final,color='forestgreen',linestyle='-' ,zorder=z,alpha=1,label=rf'Euler amb $\gamma={g:.2f}$')
+    plt.plot(x,T_real,color='slateblue',linestyle='-',label='Solució analitica')
     plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
-    plt.axhline(50, color='indianred',label='50ºC')
-    plt.axvspan(0.75,1.25, color='lavender',label='Zona malalta')
+    plt.axhline(50, color='brown',label='Temperatura 50ºC',zorder=1)
+    plt.axvspan(0.75,1.25, color='skyblue',alpha=0.75,label='Zona malalta',zorder=0)
     plt.xlabel('Posició en cm')
     plt.ylabel('Temperatura en ºC')
     plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black')
     plt.show()
 
+#Farem una llista de colors per poder personalitzar el grafic
+colors=['mediumseagreen','darkviolet','darkcyan']
 
 #Grafiquem els errors
-for er,dt,color in zip(Errors,Dt,colors):
+for er,dt,color in zip(Errors,Dt,colors): #el zip ens permet que hi hagi dues dependencies a la vegada al bucle, i aixi podrem personalitzar els colors del grafic
    g=dt/dx**2 #Aixo ho farem per poder posar els labels
-   plt.plot(xn,er,color=color,label=f'gamma={g:.2f}')
+   plt.plot(xn,er,color=color,label=rf'Euler amb $\gamma={g:.2f}$')
 plt.xlabel('Posició normalitzada')
 plt.ylabel('Error normalitzat')
 plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
 plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black')
 plt.show()
 #Tambe farem una grafica sense l'error de dt1 per poder comparar millor els altres
-plt.plot(xn,Errors[-1],color=colors[-1] ,label='gamma 0.25')
-plt.plot(xn,Errors[1],color=colors[1], label='gamma 0.45')
+plt.plot(xn,Errors[-1],color=colors[-1] ,label=r'Euler amb $\gamma 0.25$')
+plt.plot(xn,Errors[1],color=colors[1], label=r'Euler amb $\gamma 0.45$')
 plt.xlabel('Posició normalitzada')
 plt.ylabel('Error normalitzat')
 plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
