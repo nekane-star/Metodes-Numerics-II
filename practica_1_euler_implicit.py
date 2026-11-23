@@ -100,7 +100,7 @@ for n in range(Nt):
 T_real = T/C - 273.15
 
 #REPRESENTACIÓ GRÀFICA
-plt.plot(2*x, T_real, color='forestgreen'label='Euler amb gamma=1',)
+plt.plot(2*x, T_real, color='forestgreen',label='Euler amb gamma=1',)
 plt.xlabel("Posició (cm)")
 plt.ylabel("Temperatura (ºC)")
 plt.axhline(50, color='brown', label='50 ºC')
@@ -261,6 +261,7 @@ plt.tick_params(axis='both', which='both',
 plt.legend()
 plt.show()
 print(np.max(np.abs(T_final1-T_final2))) #Diferència entre les dues solucions
+
 
 
 
