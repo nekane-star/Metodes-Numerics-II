@@ -260,4 +260,5 @@ plt.tick_params(axis='both', which='both',
 
 plt.legend()
 plt.show()
+print(np.max(np.abs(T_final1-T_final2))) #Diferència entre les dues solucions
 
