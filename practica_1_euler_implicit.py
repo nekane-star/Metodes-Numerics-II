@@ -184,7 +184,7 @@ x = np.linspace(0, L, N) #Vector de posicions espaials
 
 # 4. PARÀMETRE r
 
-r = dt/dx**2 #r=1
+r = dt/dx**2 
 
 # 5. CONSTRUCCIÓ DE LA MATRIU A
 
@@ -261,4 +261,5 @@ plt.tick_params(axis='both', which='both',
 plt.legend()
 plt.show()
 print(np.max(np.abs(T_final1-T_final2))) #Diferència entre les dues solucions
+
 
