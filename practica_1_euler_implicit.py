@@ -116,10 +116,15 @@ def sol_analitica(k,q,xn,t_final):
     return k+2*q/(np.pi**3)*sum(((1-(-1)**n)/n**3)*np.sin(n*np.pi*xn)*(1-np.exp(-n**2 *np.pi**2 * t_final)) for n in range(1,100) )
 
 T_final1 = T.copy()
-Errors1 = []
 T_norm = sol_analitica(Tc, 1, x, ta)
 Err = np.abs(T_norm - T_final1)
-Errors1.append(Err)
+
+# Desfer la normalització
+T_analitica_real = T_norm/C - 273.15
+T_final1_real = T_final1/C - 273.15
+
+# Error en graus Celsius
+Errors1 = np.abs(T_analitica_real - T_final1_real)
 
 #SEGON APARTAT: dt = 0.5*dx**2
 import numpy as np
@@ -239,28 +244,29 @@ plt.show()
 def sol_analitica(k,q,xn,t_final):
     return k+2*q/(np.pi**3)*sum(((1-(-1)**n)/n**3)*np.sin(n*np.pi*xn)*(1-np.exp(-n**2 *np.pi**2 * t_final)) for n in range(1,100) )
 
-
-Errors2 = []
-Err = np.abs(T_norm - T_final2)
-Errors2.append(Err)
+T_norm=sol_analitica(Tc, 1, x, ta)
+T_analitica_real = T_norm/C - 273.15
+T_final2_real = T_final2/C - 273.15
+Errors2 = np.abs(T_analitica_real - T_final2_real)
 
 # REPRESENTACIÓ DELS ERRORS
 
-plt.plot(2*x, Errors1[0], color='forestgreen',
+plt.plot(2*x, Errors1, color='forestgreen',
          label=r'$\Delta t=(\Delta x)^2$')
 
-plt.plot(2*x, Errors2[0], color='royalblue',
+plt.plot(2*x, Errors2, color='royalblue',
          label=r'$\Delta t=0.5(\Delta x)^2$')
 
 plt.xlabel("Posició (cm)")
-plt.ylabel("Error absolut (ºC)")
+plt.ylabel("Error (ºC)")
 
 plt.tick_params(axis='both', which='both',
                 top=True, right=True, direction='in')
 
 plt.legend()
 plt.show()
-print(np.max(np.abs(T_final1-T_final2))) #Diferència entre les dues solucions
+print("Diferència màxima=",np.max(np.abs(T_final1-T_final2))/C, "ºC") #Diferència entre les dues solucions
+
 
 
 
