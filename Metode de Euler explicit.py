@@ -20,12 +20,10 @@ C=2*kappa/(sigma*dV**2)
 
 #Definim els punts del maiat espaial(per poder fer els grafics despres)
 x=[] #Aquesta serà la llista de x no normalitzades (la que farem servir en general)
-xn=[] #Aquesta serà la llista de x normalitzades que farem servir per la grafica de l'error
 for u in range(N):
     xin=x0+u*dx #Aquesta esta normalitzada
     xi=xin*2 #Aquesta esta sense normalitzar
     x.append(xi)
-    xn.append(xin)
 
 #Condicions de contorn
 Tc_no=36.5 #En ºC (aquesta és la no normalitzada)
@@ -54,8 +52,7 @@ def T(k,q,xn,t_final):
 
 Xn=np.linspace(0,1,N)
 Q=1
-T_norm=T(Tc,Q,Xn,tmax) #Normalitzada pel calcul de l'error
-T_real=(4720/7)*T_norm -273.15 #Sense normalitzar i en ºC per les comparacions
+T_real=(4720/7)*T(Tc,Q,Xn,tmax) -273.15 #Sense normalitzar i en ºC 
 
 
 'Metode Euler explicit'
@@ -86,9 +83,6 @@ for (dt,z) in zip(Dt,ordre):
     #D'aqui nomes ens interesarà l'ultima filera, que correspon a T(x,ta), aixi que definirem
     T_final_n=m[-1][:]
 
-    #Calculem l'error de les funcions i fem el grafic de l'error
-    Err=np.abs(T_norm - T_final_n)
-    Errors.append(Err)
 
     #Desfem la normalitzacio
     T_final=[]
@@ -99,15 +93,19 @@ for (dt,z) in zip(Dt,ordre):
 
     T_imp.append(T_final) #Afegim la filera a la llista per despres poder fer diferents grafics si fos necessari
 
+    #Calculem l'error de les funcions i fem el grafic de l'error
+    Err=np.abs(T_real - np.array(T_final)) #El np.array es perque es faci l'operació a cada numero de la llista perque sino python no ho enten (tambe es podria fer amb un bucle com la desnosmalització de T_final)
+    Errors.append(Err)
+
     #Fem els grafics  (la idea principal era fer un unic grafic amb totes tres però no s'aprecia be, de manera que es faran 3 grafics)
     plt.plot(x,T_final,color='forestgreen',linestyle='-' ,zorder=z,alpha=1,label=rf'Euler amb $\gamma={g:.2f}$')
-    plt.plot(x,T_real,color='slateblue',linestyle='-',label='Solució analitica')
+    plt.plot(x,T_real,color='slateblue',linestyle='-',label='Solució analitíca')
     plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
     plt.axhline(50, color='brown',label='Temperatura 50ºC',zorder=1)
     plt.axvspan(0.75,1.25, color='skyblue',alpha=0.75,label='Zona malalta',zorder=0)
-    plt.xlabel('Posició en cm')
-    plt.ylabel('Temperatura en ºC')
-    plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black')
+    plt.xlabel('Posició (cm)')
+    plt.ylabel('Temperatura (ºC)')
+    plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black',loc='upper right')
     plt.show()
 
 #Farem una llista de colors per poder personalitzar el grafic
@@ -116,17 +114,17 @@ colors=['mediumseagreen','darkviolet','darkcyan']
 #Grafiquem els errors
 for er,dt,color in zip(Errors,Dt,colors): #el zip ens permet que hi hagi dues dependencies a la vegada al bucle, i aixi podrem personalitzar els colors del grafic
    g=dt/dx**2 #Aixo ho farem per poder posar els labels
-   plt.plot(xn,er,color=color,label=rf'Euler amb $\gamma={g:.2f}$')
-plt.xlabel('Posició normalitzada')
-plt.ylabel('Error normalitzat')
+   plt.plot(x,er,color=color,label=rf'Euler amb $\gamma={g:.2f}$')
+plt.xlabel('Posició (cm)')
+plt.ylabel('Error (ºC)')
 plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
-plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black')
+plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black',loc='upper right')
 plt.show()
 #Tambe farem una grafica sense l'error de dt1 per poder comparar millor els altres
-plt.plot(xn,Errors[-1],color=colors[-1] ,label=r'Euler amb $\gamma 0.25$')
-plt.plot(xn,Errors[1],color=colors[1], label=r'Euler amb $\gamma 0.45$')
-plt.xlabel('Posició normalitzada')
-plt.ylabel('Error normalitzat')
+plt.plot(x,Errors[-1],color=colors[-1] ,label=r'Euler amb $\gamma=0.25$')
+plt.plot(x,Errors[1],color=colors[1], label=r'Euler amb $\gamma=0.49$')
+plt.xlabel('Posició (cm)')
+plt.ylabel('Error absolut (ºC)')
 plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
 plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black')
 plt.show()    
