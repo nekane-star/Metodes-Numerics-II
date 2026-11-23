@@ -61,7 +61,7 @@ x = np.linspace(0, L, N) #Vector de posicions espaials
 
 
 # 4. PARÀMETRE r
-
+#r=gamma
 r = dt/dx**2 #r=1
 
 # 5. CONSTRUCCIÓ DE LA MATRIU A
@@ -100,7 +100,7 @@ for n in range(Nt):
 T_real = T/C - 273.15
 
 #REPRESENTACIÓ GRÀFICA
-plt.plot(2*x, T_real, color='forestgreen')
+plt.plot(2*x, T_real, color='forestgreen'label='Euler amb gamma=1',)
 plt.xlabel("Posició (cm)")
 plt.ylabel("Temperatura (ºC)")
 plt.axhline(50, color='brown', label='50 ºC')
@@ -223,7 +223,7 @@ T_final2 = T.copy()
 T_real = T/C - 273.15
 
 #REPRESENTACIÓ GRÀFICA
-plt.plot(2*x, T_real, color='forestgreen')
+plt.plot(2*x, T_real, color='forestgreen',label='Euler amb gamma=0.5')
 plt.xlabel("Posició (cm)")
 plt.ylabel("Temperatura (ºC)")
 plt.axhline(50, color='brown', label='50 ºC')
@@ -260,3 +260,4 @@ plt.tick_params(axis='both', which='both',
 
 plt.legend()
 plt.show()
+
