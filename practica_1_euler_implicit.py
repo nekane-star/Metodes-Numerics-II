@@ -246,10 +246,10 @@ Errors2.append(Err)
 
 # REPRESENTACIÓ DELS ERRORS
 
-plt.plot(2*x, Errors1[0]/C, color='forestgreen',
+plt.plot(2*x, Errors1[0], color='forestgreen',
          label=r'$\Delta t=(\Delta x)^2$')
 
-plt.plot(2*x, Errors2[0]/C, color='royalblue',
+plt.plot(2*x, Errors2[0], color='royalblue',
          label=r'$\Delta t=0.5(\Delta x)^2$')
 
 plt.xlabel("Posició (cm)")
@@ -261,5 +261,6 @@ plt.tick_params(axis='both', which='both',
 plt.legend()
 plt.show()
 print(np.max(np.abs(T_final1-T_final2))) #Diferència entre les dues solucions
+
 
 
