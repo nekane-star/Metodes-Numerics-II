@@ -100,10 +100,10 @@ for n in range(Nt):
 T_real = T/C - 273.15
 
 #REPRESENTACIÓ GRÀFICA
-plt.plot(2*x, T_real, color='forestgreen',label='Euler amb gamma=1',)
+plt.plot(2*x, T_real, color='forestgreen',label=r'Euler amb $\gamma=1$',)
 plt.xlabel("Posició (cm)")
 plt.ylabel("Temperatura (ºC)")
-plt.axhline(50, color='brown', label='50 ºC')
+plt.axhline(50, color='brown', label='Temperatura 50 ºC')
 plt.axvspan(0.75, 1.25, color='skyblue', label='Zona malalta')
 plt.ylim(35,55)
 plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
@@ -228,10 +228,10 @@ T_final2 = T.copy()
 T_real = T/C - 273.15
 
 #REPRESENTACIÓ GRÀFICA
-plt.plot(2*x, T_real, color='forestgreen',label='Euler amb gamma=0.5')
+plt.plot(2*x, T_real, color='forestgreen',label=r'Euler amb $\gamma=0.5$')
 plt.xlabel("Posició (cm)")
 plt.ylabel("Temperatura (ºC)")
-plt.axhline(50, color='brown', label='50 ºC')
+plt.axhline(50, color='brown', label='Temperatura 50 ºC')
 plt.axvspan(0.75, 1.25, color='skyblue', label='Zona malalta')
 plt.ylim(35,55)
 plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
