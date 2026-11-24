@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 #SOLUCIÓ ANALÍTICA#
 
-#Utilitzem l'expressió de l'annex i substituim el valor de q i de k per calcular la temperatura (normalitzada) en funció de x (normalitzat) a t=0.025 (normalitzat) per definir una funció
+#Utilitzem l'expressió de l'annex i calculem la temperatura (normalitzada) en funció de x (normalitzat), k i q a t=0.025 (normalitzat)
 def T(k,q):
     return k+2*q/(np.pi**3)*sum(((1-(-1)**n)/n**3)*np.sin(n*np.pi*x)*(1-np.exp(-n**2 *np.pi**2 * t_final)) for n in range(1,100) )
 
