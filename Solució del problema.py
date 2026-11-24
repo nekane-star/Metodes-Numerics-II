@@ -23,11 +23,14 @@ for u in range(N):
     x.append(xi)
     xn.append(xin)
 
-#Constant de normalització
+#Constants de normalització 
 dV=40
 sigma=0.472
 kappa=0.56
-C=2*kappa/(sigma*dV**2)
+cv=3698
+ro=1081
+C=2*kappa/(sigma*dV**2) #Normalització de la temperatura
+K= 0.02**2*ro*cv/kappa #Normalització del temps
 
 #Condicions de contorn
 Tc_no=36.5 #En ºC (aquesta és la no normalitzada)
@@ -77,6 +80,8 @@ for n in range(Nt-1):
         m[n+1][j]=m[n][j]+g*(m[n][j+1]-2*m[n][j]+m[n][j-1])+dt
        
     T_final_n=m[n+1][:] #Això ens redefinira T_final_n cada cop com l'ultima fila que ha completat. Quan pari el codi T_final_n serà la ultima fila amb numeros de la matriu, i la fila que ens interesa
+    #Calculem en quin temps ens trobem
+    t_final_n=t0+n*dt
     #Afegim la comprovació
     if m[n+1][ind_front_1]>=TM:
         break
@@ -93,12 +98,16 @@ for t in T_final_n:
     T_final.append(tf)
 
 'Gràfica'
-plt.plot(x,T_final,color='forestgreen',label='Solució per Euler',zorder=3)
+plt.plot(x,T_final,color='forestgreen',label=r'Solució per Euler $\gamma = 0.25$',zorder=3)
 plt.tick_params(axis='both',which='both',top=True,right=True,direction='in')
-plt.axhline(50, color='brown',label='50ºC')
+plt.axhline(50, color='brown',label='Temperatura 50ºC')
 plt.axvspan(0.75,1.25, color='skyblue',alpha=0.75,label='Zona malalta')
-plt.xlabel('Posició en cm')
-plt.ylabel('Temperatura en ºC')
+plt.xlabel('Posició (cm)')
+plt.ylabel('Temperatura (ºC)')
 plt.legend(fancybox=False,shadow=False,fontsize=10,edgecolor='black')
 plt.show()
+
+#Desfem la normalització del temps
+t_final=t_final_n*K
+print(f'{t_final:.6f}')
         
