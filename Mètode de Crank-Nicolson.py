@@ -15,7 +15,7 @@ t_final=0.025
 N=101
 x=np.linspace(0,1,N)
 
-# a és la relació entre delta_t i (delta_x)^2
+# a és la relació entre delta_t i (delta_x)^2 (als metodes de Euler la defineixen com gamma)
 #Programem la funció que té com a output la matriu de temperatures a qualsevol posició x i temps t i té com a input el paràmetre que relaciona les dues discretitzacions normalitzades (de x i de t)
 def calcul (a):
        
@@ -28,8 +28,8 @@ def calcul (a):
     #Nombre de punts pel temps
     N_t = int(t_final / delta_t)
 
-    #Definim gamma
-    g=delta_t/(2*(delta_x)**2)
+    #Definim h
+    h=delta_t/(2*(delta_x)**2)
 
     #Matriu de temperatures
     T= [[sp.Symbol(f"x_{s}_{d}") for d in range(N)]
@@ -55,21 +55,21 @@ def calcul (a):
     #Comencem el procés iteratiu, ho fem N-1 vegades perquè ja coneixem la primera fila de temperatures (CI)
     for n in range(N_t):
         #Els primers valors de temperatura el calcularem manualment (perquè la fòrmula és diferent)
-        A[0,0]=1+2*g
-        A[0,1]=-g
-        b[0,0]=(1-2*g)*d[1]+g*(d[2]+d[0]+d[0]) + delta_t
+        A[0,0]=1+2*h
+        A[0,1]=-h
+        b[0,0]=(1-2*h)*d[1]+h*(d[2]+d[0]+d[0]) + delta_t
 
         #Els valors seguents els calculem amb un bucle (perquè tenen la mateixa formula)
         for j in range(N-4):
-            A[j+1,j]=-g
-            A[j+1,j+1]=1+2*g
-            A[j+1,j+2]=-g
-            b[j+1,0]=d[j+2]*(1-2*g)+g*(d[j+3]+d[j+1]) + delta_t
+            A[j+1,j]=-h
+            A[j+1,j+1]=1+2*h
+            A[j+1,j+2]=-h
+            b[j+1,0]=d[j+2]*(1-2*h)+h*(d[j+3]+d[j+1]) + delta_t
 
         #Els ultims valors els calculem manualment (pq la fòrmula és diferent)
-        A[-1,-2]=-g
-        A[-1,-1]=1+2*g
-        b[N-3,0]=(1-2*g)*d[N-2]+g*(d[N-1]+d[N-1]+d[N-3]) + delta_t
+        A[-1,-2]=-h
+        A[-1,-1]=1+2*h
+        b[N-3,0]=(1-2*h)*d[N-2]+h*(d[N-1]+d[N-1]+d[N-3]) + delta_t
 
         #Ara tenim la matriu A i el vector b completes, per tant resolem per Gauss-seidel
 
@@ -119,21 +119,21 @@ T_real=(4720/7)*T_norm -273.15
 
 x_real=np.linspace(0,2,N)
 #Representem gràficament la solució analítica i les aproximacions
-plt.plot(x_real, T_1[-1], label="Crank-Nicolson amb a = 1",color='green')
+plt.plot(x_real, T_1[-1], label=r"Crank-Nicolson amb $\gamma = 1$",color='green')
 plt.axhline(y=50, color='brown', linestyle='-',label='Temperatura 50ºC')
-plt.plot(x_real,T_real,color='black',label='solució analítica')
+plt.plot(x_real,T_real,color='black',label='Solució analítica')
 plt.axvspan(xmin=0.75, xmax=1.25, color='skyblue', alpha=1, label='Zona malalta')
-plt.xlabel("x (cm)")
+plt.xlabel("Posició (cm)")
 plt.ylabel("Temperatura (ºC)")
 plt.tick_params(axis='both', direction='in', top=True, right=True)
 plt.legend(loc='upper right')
 plt.show()
 
-plt.plot(x_real, T_05[-1], label="Crank-Nicolson amb a = 0.5",color='green')
+plt.plot(x_real, T_05[-1], label=r"Crank-Nicolson amb $\gamma = 0.5$",color='green')
 plt.axhline(y=50, color='brown', linestyle='-',label='Temperatura 50ºC')
-plt.plot(x_real,T_real,color='black',label='solució analítica')
+plt.plot(x_real,T_real,color='black',label='Solució analítica')
 plt.axvspan(xmin=0.75, xmax=1.25, color='skyblue', alpha=1,label='Zona malalta')
-plt.xlabel("x (cm)")
+plt.xlabel("Posició (cm)")
 plt.ylabel("Temperatura (ºC)")
 plt.tick_params(axis='both', direction='in', top=True, right=True)
 plt.legend(loc='upper right')
@@ -145,12 +145,12 @@ e_05=np.abs(T_real-T_05[-1])
 e_1=np.abs(T_real-T_1[-1])
 
 #Representem gràficament els errors numèrics
-plt.plot(x_real,e_05,label='error amb a=0.5',color='red')
+plt.plot(x_real,e_05,label=r'Error amb $\gamma=0.5$',color='red')
 plt.tick_params(axis='both', direction='in', top=True, right=True)
-plt.plot(x_real,e_1,label='error amb a=1',color='blue')
+plt.plot(x_real,e_1,label=r'Error amb $\gamma=1$',color='blue')
 plt.legend(loc='upper right')
-plt.xlabel('x (cm)')
-plt.ylabel('Error numèric')
+plt.xlabel('Posició (cm)')
+plt.ylabel('Error absolut (ºC)')
 plt.show()
 
 
