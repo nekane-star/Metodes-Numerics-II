@@ -6,3 +6,5 @@ Per tal d'entendre millor el funcionament dels codis i seguir el mateix ordre qu
        4-Mètode de Crank-Nicolson
        5-Solució del problema
 
+Tots els fitxers estan escrits en Pyhton, de manera que serà necessari tenir un processador que entengui aquest llenguatge per poder-los llegir.
+
